@@ -321,3 +321,5 @@ export function renderInlineContents(contents: InlineContent[]): string {
     return c.toTypst();
   }).join('');
 }
+
+

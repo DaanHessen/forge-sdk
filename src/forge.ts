@@ -42,14 +42,14 @@ type Stmt =
   | { kind: 'define_style'; name: string; props: Prop[] }
   | { kind: 'block'; body: Stmt[] };
 
-export class ForgeCompileError extends Error {
+export class TypeforgeCompileError extends Error {
   constructor(message: string, public readonly line: number, public readonly column: number) {
-    super(`Forge syntax error at line ${line}, column ${column}: ${message}`);
-    this.name = 'ForgeCompileError';
+    super(`Typeforge syntax error at line ${line}, column ${column}: ${message}`);
+    this.name = 'TypeforgeCompileError';
   }
 }
 
-export function compileForge(source: string): string {
+export function compileTypeforge(source: string): string {
   if (source.length > 500_000) {
     throw new Error('Forge source exceeds maximum size of 500KB');
   }
@@ -86,17 +86,17 @@ function tokenize(source: string): Token[] {
         if (current === '"') { i += 1; column += 1; out.push({ type: 'string', value, line: startLine, column: startColumn }); break; }
         if (current === '\\') {
           i += 1; column += 1;
-          if (i >= chars.length) throw new ForgeCompileError('unterminated string literal', startLine, startColumn);
+          if (i >= chars.length) throw new TypeforgeCompileError('unterminated string literal', startLine, startColumn);
           const escaped = chars[i];
           value += ({ '"': '"', '\\': '\\', n: '\n', r: '\r', t: '\t' } as Record<string, string>)[escaped] ?? '';
-          if (!['"', '\\', 'n', 'r', 't'].includes(escaped)) throw new ForgeCompileError(`unsupported escape sequence \\${escaped}`, line, column);
+          if (!['"', '\\', 'n', 'r', 't'].includes(escaped)) throw new TypeforgeCompileError(`unsupported escape sequence \\${escaped}`, line, column);
           i += 1; column += 1;
           continue;
         }
-        if (current === '\n') throw new ForgeCompileError('string literals must stay on one line', startLine, startColumn);
+        if (current === '\n') throw new TypeforgeCompileError('string literals must stay on one line', startLine, startColumn);
         value += current; i += 1; column += 1;
       }
-      if (out[out.length - 1]?.type !== 'string') throw new ForgeCompileError('unterminated string literal', startLine, startColumn);
+      if (out[out.length - 1]?.type !== 'string') throw new TypeforgeCompileError('unterminated string literal', startLine, startColumn);
       continue;
     }
     if (/\d/.test(ch)) {
@@ -111,7 +111,7 @@ function tokenize(source: string): Token[] {
       out.push({ type: 'ident', value: chars.slice(start, i).join(''), line, column: startColumn });
       continue;
     }
-    throw new ForgeCompileError(`unexpected character '${ch}'`, line, column);
+    throw new TypeforgeCompileError(`unexpected character '${ch}'`, line, column);
   }
 
   out.push({ type: 'eof', line, column });
@@ -440,7 +440,7 @@ class Parser {
   private peekIdent(value: string): boolean { return this.current().type === 'ident' && this.currentIdent() === value; }
   private current(): Token { return this.tokens[this.index]; }
   private bump(): void { if (this.index < this.tokens.length - 1) this.index += 1; }
-  private fail(message: string): ForgeCompileError { const token = this.current(); return new ForgeCompileError(message, token.line, token.column); }
+  private fail(message: string): TypeforgeCompileError { const token = this.current(); return new TypeforgeCompileError(message, token.line, token.column); }
   private currentIdent(): string { return (this.current() as Extract<Token, { type: 'ident' }>).value; }
   private currentString(): string { return (this.current() as Extract<Token, { type: 'string' }>).value; }
   private currentInt(): number { return (this.current() as Extract<Token, { type: 'int' }>).value; }
@@ -489,8 +489,8 @@ function renderStmt(stmt: Stmt): string {
     const radius = stmt.radius ? `radius: ${stmt.radius}, ` : '';
     return `#rect(${fill}${radius}width: 100%, stroke: none, inset: 10pt)[\n${stmt.body.map(renderStmt).join('')}]\n\n`;
   }
-  if (stmt.kind === 'style') return `#forge_style_${stmt.name}( [\n${stmt.body.map(renderStmt).join('')}])\n\n`;
-  if (stmt.kind === 'define_style') return `#let forge_style_${stmt.name}(body) = { set text(${renderProps(stmt.props)}); body }\n\n`;
+  if (stmt.kind === 'style') return `#typeforge_style_${stmt.name}( [\n${stmt.body.map(renderStmt).join('')}])\n\n`;
+  if (stmt.kind === 'define_style') return `#let typeforge_style_${stmt.name}(body) = { set text(${renderProps(stmt.props)}); body }\n\n`;
   if (stmt.kind === 'block') return stmt.body.map(renderStmt).join('');
   return '';
 }
@@ -555,3 +555,5 @@ function escapeText(value: string): string {
 function escapeString(value: string): string {
   return value.replace(/\\/g, '\\\\').replace(/"/g, '\\"').replace(/\n/g, '\\n').replace(/\r/g, '\\r');
 }
+
+

@@ -258,3 +258,5 @@ export function code(content: string): InlineCodeNode {
 export function link(url: string, label?: string): LinkNode {
   return new LinkNode(url, label);
 }
+
+

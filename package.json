@@ -1,7 +1,7 @@
 {
-  "name": "forge-sdk",
+  "name": "typeforge-sdk",
   "version": "0.1.1",
-  "description": "Official TypeScript SDK for the ForgeAPI PDF rendering API. Render Typst templates, bundle local projects, and build documents programmatically.",
+  "description": "Official TypeScript SDK for the Typeforge API PDF rendering platform. Render Typst templates, bundle local projects, and build documents programmatically.",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "exports": {
@@ -22,7 +22,7 @@
     "pdf",
     "template",
     "rendering",
-    "ForgeAPI"
+    "Typeforge"
   ],
   "license": "MIT",
   "files": [

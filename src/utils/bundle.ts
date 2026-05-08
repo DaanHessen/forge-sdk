@@ -1,4 +1,4 @@
-﻿import * as fs from 'fs';
+import * as fs from 'fs';
 import * as path from 'path';
 import ignore from 'ignore';
 
@@ -15,7 +15,7 @@ const BINARY_EXTENSIONS = new Set([
 ]);
 
 export interface BundleResult {
-  /** Files dict: relative path â†’ base64 string */
+  /** Files dict: relative path → base64 string */
   files: Record<string, string>;
   /** The relative path of the main entry file */
   mainFilePath: string;
@@ -23,7 +23,7 @@ export interface BundleResult {
 
 /**
  * Bundles a local Typst project directory into a payload suitable for the
- * ForgeAPI `/render` API endpoint.
+ * Typeforge API `/render` API endpoint.
  *
  * - Resolves the project root as the directory containing the entry file.
  * - Crawls all files with accepted extensions.
@@ -113,3 +113,5 @@ export async function bundleProject(
 export function isBinaryExtension(ext: string): boolean {
   return BINARY_EXTENSIONS.has(ext.toLowerCase());
 }
+
+

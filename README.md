@@ -1,14 +1,14 @@
-# ForgeAPI SDK (TypeScript)
+# TypeTypeTypeforge API SDK (TypeScript)
 
-The official Node.js/TypeScript SDK for [ForgeAPI](https://github.com/DaanHessen/forge-api).
-GitHub: [DaanHessen/forge-sdk](https://github.com/DaanHessen/forge-sdk)
+The official Node.js/TypeScript SDK for [TypeTypeTypeforge API](https://github.com/DaanHessen/Typeforge-api).
+GitHub: [DaanHessen/Typetypeforge-sdk](https://github.com/DaanHessen/Typetypeforge-sdk)
 
 ## Features
 
 - ðŸ“„ **Render stored templates** with dynamic JSON data
 - ðŸ“ **Bundle and render local Typst projects** â€” zero manual file management
 - ðŸ—ï¸ **Build documents in code** with a fully typed AST builder
-- ⚒️ **Compile Forge locally** into Typst before rendering
+- ⚒️ **Compile Typeforge locally** into Typst before rendering
 - ðŸ”’ Zero runtime dependencies (uses Node.js built-ins)
 - ðŸŒ Works in Node.js 18+
 
@@ -17,7 +17,7 @@ GitHub: [DaanHessen/forge-sdk](https://github.com/DaanHessen/forge-sdk)
 ## Installation
 
 ```bash
-npm install forge-sdk
+npm install Typetypeforge-sdk
 ```
 
 ---
@@ -25,9 +25,9 @@ npm install forge-sdk
 ## Quick Start
 
 ```typescript
-import { ForgeAPIClient } from 'forge-sdk';
+import { TypeTypeTypeforge APIClient } from 'Typetypeforge-sdk';
 
-const client = new ForgeAPIClient({ apiKey: 'sk_YOUR_API_KEY' });
+const client = new TypeTypeTypeforge APIClient({ apiKey: 'sk_YOUR_API_KEY' });
 ```
 
 ---
@@ -36,7 +36,7 @@ const client = new ForgeAPIClient({ apiKey: 'sk_YOUR_API_KEY' });
 
 ### 1. Render a Stored Template
 
-Use a template you've uploaded to your ForgeAPI account and inject data:
+Use a template you've uploaded to your TypeTypeTypeforge API account and inject data:
 
 ```typescript
 const result = await client.render({
@@ -88,7 +88,7 @@ await client.renderLocal('./my-poster/example.typ');
 Use `TypstBuilder` to construct a full Typst document in TypeScript without writing any `.typ` files:
 
 ```typescript
-import { TypstBuilder, bold, italic, link } from 'forge-sdk';
+import { TypstBuilder, bold, italic, link } from 'Typetypeforge-sdk';
 
 const doc = new TypstBuilder()
   // Document setup
@@ -137,12 +137,12 @@ await result.save('report.pdf');
 
 ---
 
-### 4. Compile Forge Locally
+### 4. Compile Typeforge Locally
 
-Use the constrained Rust-flavored Forge DSL when you want a smaller, safer authoring surface. Compilation happens inside the SDK, then the API receives plain Typst:
+Use the constrained Rust-flavored Typeforge DSL when you want a smaller, safer authoring surface. Compilation happens inside the SDK, then the API receives plain Typst:
 
 ```typescript
-const forge = `
+const Typeforge = `
 doc {
   page(margin: "18mm");
   text(font: "Outfit", size: "11pt");
@@ -155,7 +155,7 @@ doc {
 }
 `;
 
-const result = await client.renderForge(forge, {
+const result = await client.renderTypeforge(Typeforge, {
   data: { customer: 'Acme Corp' },
 });
 
@@ -185,12 +185,12 @@ const result = await client.render({
 
 ## API Reference
 
-### `ForgeAPIClient`
+### `TypeTypeTypeforge APIClient`
 
 | Method | Description |
 |---|---|
 | `render(options)` | Render a PDF from a template ID or raw content |
-| `renderForge(source, options?)` | Compile Forge locally, then render the resulting Typst |
+| `renderTypeforge(source, options?)` | Compile Typeforge locally, then render the resulting Typst |
 | `renderLocal(path, options?)` | Bundle and render a local Typst project |
 
 ### `TypstBuilder` â€” Block Methods
@@ -225,9 +225,9 @@ const result = await client.render({
 ### Inline Helpers
 
 ```typescript
-import { bold, italic, code, link } from 'forge-sdk';
+import { bold, italic, code, link } from 'Typetypeforge-sdk';
 
-builder.paragraph(['See ', link('https://ForgeAPI.com', 'ForgeAPI'), ' for details.']);
+builder.paragraph(['See ', link('https://TypeTypeTypeforge API.com', 'TypeTypeTypeforge API'), ' for details.']);
 builder.paragraph(['This is ', bold('important'), ' and ', italic('subtle'), '.']);
 ```
 
@@ -237,11 +237,12 @@ builder.paragraph(['This is ', bold('important'), ' and ', italic('subtle'), '.'
 
 | Variable | Description |
 |---|---|
-| `ForgeAPI_TEST_API_KEY` | API key for integration tests |
-| `ForgeAPI_TEST_BASE_URL` | Override API URL for tests (default: `http://localhost:3000`) |
+| `TypeTypeTypeforge API_TEST_API_KEY` | API key for integration tests |
+| `TypeTypeTypeforge API_TEST_BASE_URL` | Override API URL for tests (default: `http://localhost:3000`) |
 
 ---
 
 ## License
 
 MIT
+

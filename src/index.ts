@@ -1,11 +1,11 @@
 /**
- * ForgeAPI â€” Official Node.js SDK for the ForgeAPI PDF rendering API.
+ * Typeforge API â€” Official Node.js SDK for the Typeforge API PDF rendering API.
  *
  * @example
  * ```ts
- * import { ForgeAPIClient, TypstBuilder, bold, italic } from 'forge-sdk';
+ * import { TypeforgeClient, TypstBuilder, bold, italic } from 'typeforge-sdk';
  *
- * const client = new ForgeAPIClient({ apiKey: 'sk_...' });
+ * const client = new TypeforgeClient({ apiKey: 'sk_...' });
  *
  * // 1. Render a stored template with data
  * const result = await client.render({
@@ -36,7 +36,7 @@
  */
 
 // Client
-export { ForgeAPIClient, ForgeAPIApiError } from './client';
+export { TypeforgeClient, TypeforgeError } from './client';
 
 // Builder â€” fluent API
 export { TypstBuilder, TypstDocument } from './builder/index';
@@ -77,7 +77,7 @@ export {
 
 // Renderer
 export { renderAst } from './builder/renderer';
-export { compileForge, ForgeCompileError } from './forge';
+export { compileTypeforge, TypeforgeCompileError } from './forge';
 
 // Utils
 export { bundleProject } from './utils/bundle';
@@ -86,10 +86,10 @@ export { bundleProject } from './utils/bundle';
 export type {
   ClientOptions,
   RenderOptions,
-  RenderForgeOptions,
+  RenderTypeforgeOptions,
   RenderLocalOptions,
   RenderResult,
-  ForgeAPIError,
+  TypeforgeError,
 } from './types';
 
 export type {
@@ -97,3 +97,5 @@ export type {
   InlineContent,
   InlineNode,
 } from './builder/nodes';
+
+

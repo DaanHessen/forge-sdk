@@ -1,12 +1,12 @@
 /**
- * Shared TypeScript interfaces for the ForgeAPI SDK.
+ * Shared TypeScript interfaces for the Typeforge API SDK.
  */
 
 /** Authentication options for the client. */
 export interface ClientOptions {
-  /** Your ForgeAPI API key (sk_...). */
+  /** Your Typeforge API API key (sk_...). */
   apiKey: string;
-  /** Override the base URL. Defaults to https://api.ForgeAPI.com */
+  /** Override the base URL. Defaults to https://api.Typeforge API.com */
   baseUrl?: string;
   /** Request timeout in milliseconds. Defaults to 60000. */
   timeout?: number;
@@ -14,12 +14,12 @@ export interface ClientOptions {
 
 /** Options for rendering a document from the API. */
 export interface RenderOptions {
-  /** ID of a template stored in ForgeAPI. */
+  /** ID of a template stored in Typeforge API. */
   templateId?: string;
   /** Raw Typst source content. Use TypstBuilder.build().toTypst() here. */
   content?: string;
-  /** Explicitly set the language: 'typst' | 'markdown' | 'latex' | 'forge'. Auto-detected if omitted. */
-  language?: 'typst' | 'markdown' | 'latex' | 'forge';
+  /** Explicitly set the language: 'typst' | 'markdown' | 'latex' | 'typeforge'. Auto-detected if omitted. */
+  language?: 'typst' | 'markdown' | 'latex' | 'typeforge';
   /** JSON data to interpolate into the template. */
   data?: Record<string, unknown>;
   /**
@@ -35,8 +35,8 @@ export interface RenderOptions {
   mainFilePath?: string;
 }
 
-/** Options for rendering Forge after local compilation to Typst. */
-export interface RenderForgeOptions {
+/** Options for rendering Typeforge after local compilation to Typst. */
+export interface RenderTypeforgeOptions {
   /** JSON data to interpolate into the compiled Typst template. */
   data?: Record<string, unknown>;
 }
@@ -68,7 +68,7 @@ export interface RenderResult {
 }
 
 /** A Typst compilation error. */
-export interface ForgeAPIError {
+export interface TypeforgeError {
   code: string;
   message: string;
 }
@@ -90,3 +90,5 @@ export interface WebhookTriggerResult {
   duration_ms: number;
   error?: string;
 }
+
+

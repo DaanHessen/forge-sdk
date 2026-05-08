@@ -1,19 +1,19 @@
 import * as fs from 'fs/promises';
 import * as http from 'http';
 import * as https from 'https';
-import { ClientOptions, RenderForgeOptions, RenderOptions, RenderLocalOptions, RenderResult } from './types';
+import { ClientOptions, RenderTypeforgeOptions, RenderOptions, RenderLocalOptions, RenderResult } from './types';
 import { bundleProject } from './utils/bundle';
-import { compileForge } from './forge';
+import { compileTypeforge } from './forge';
 
-/** Error thrown when the ForgeAPI API returns an error response. */
-export class ForgeAPIApiError extends Error {
+/** Error thrown when the Typeforge API API returns an error response. */
+export class TypeforgeError extends Error {
   constructor(
     public readonly statusCode: number,
     public readonly errorCode: string,
     message: string
   ) {
     super(message);
-    this.name = 'ForgeAPIApiError';
+    this.name = 'TypeforgeError';
   }
 }
 
@@ -29,11 +29,11 @@ function makeResult(pdf: Buffer): RenderResult {
 }
 
 /**
- * Main client for the ForgeAPI API.
+ * Main client for the Typeforge API API.
  *
  * @example
  * ```ts
- * const client = new ForgeAPIClient({ apiKey: 'sk_...' });
+ * const client = new TypeforgeClient({ apiKey: 'sk_...' });
  *
  * // Render a stored template
  * const result = await client.render({ templateId: 'invoice', data: { total: 150 } });
@@ -49,14 +49,14 @@ function makeResult(pdf: Buffer): RenderResult {
  * await result.save('hello.pdf');
  * ```
  */
-export class ForgeAPIClient {
+export class TypeforgeClient {
   private readonly apiKey: string;
   private readonly baseUrl: string;
   private readonly timeout: number;
 
   constructor(options: ClientOptions) {
     this.apiKey = options.apiKey;
-    this.baseUrl = (options.baseUrl ?? 'https://api.ForgeAPI.com').replace(/\/$/, '');
+    this.baseUrl = (options.baseUrl ?? 'https://api.Typeforge API.com').replace(/\/$/, '');
     this.timeout = options.timeout ?? 60_000;
   }
 
@@ -87,10 +87,10 @@ export class ForgeAPIClient {
   }
 
   /**
-   * Compile Forge locally to Typst, then render the resulting Typst document.
+   * Compile Typeforge locally to Typst, then render the resulting Typst document.
    */
-  async renderForge(source: string, options: RenderForgeOptions = {}): Promise<RenderResult> {
-    const typst = compileForge(source);
+  async renderTypeforge(source: string, options: RenderTypeforgeOptions = {}): Promise<RenderResult> {
+    const typst = compileTypeforge(source);
     return this.render({
       content: typst,
       language: 'typst',
@@ -105,7 +105,7 @@ export class ForgeAPIClient {
    * 1. Crawls the directory of the entry `.typ` file.
    * 2. Collects all `.typ`, image, and font files.
    * 3. Respects `.gitignore` rules.
-   * 4. Sends the bundle to the ForgeAPI API and returns the rendered PDF.
+   * 4. Sends the bundle to the Typeforge API API and returns the rendered PDF.
    *
    * @param entryFilePath - Path to the main `.typ` file.
    * @param options       - Optional data and file inclusion settings.
@@ -186,7 +186,7 @@ export class ForgeAPIClient {
             'Content-Type': 'application/json',
             ...(bodyStr ? { 'Content-Length': Buffer.byteLength(bodyStr) } : {}),
             'Authorization': `Bearer ${this.apiKey}`,
-            'User-Agent': 'ForgeAPI-sdk-node/0.1.0',
+            'User-Agent': 'Typeforge API-sdk-node/0.1.0',
           },
           timeout: this.timeout,
         },
@@ -216,7 +216,7 @@ export class ForgeAPIClient {
               message = responseBody.toString('utf-8').slice(0, 200);
             }
 
-            reject(new ForgeAPIApiError(statusCode, errorCode, message));
+            reject(new TypeforgeError(statusCode, errorCode, message));
           });
         }
       );
@@ -234,3 +234,5 @@ export class ForgeAPIClient {
     });
   }
 }
+
+
