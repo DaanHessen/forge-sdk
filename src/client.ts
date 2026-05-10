@@ -10,15 +10,33 @@ export class TypeforgeError extends Error {
   constructor(
     public readonly statusCode: number,
     public readonly errorCode: string,
-    message: string
+    message: string,
+    public readonly requestId?: string
   ) {
     super(message);
     this.name = 'TypeforgeError';
   }
 }
 
-/** Creates a RenderResult from raw PDF bytes. */
-function makeResult(pdf: Buffer): RenderResult {
+/** Creates a RenderResult from raw PDF bytes or Lifecycle metadata. */
+function makeResult(data: Buffer | string, contentType: string): RenderResult {
+  if (contentType.includes('application/json')) {
+    try {
+      const metadata = JSON.parse(data.toString('utf-8'));
+      return {
+        pdf: null,
+        size: metadata.file_size_bytes ?? metadata.metadata?.file_size_bytes ?? 0,
+        metadata,
+        async save() {
+          throw new Error('Cannot save a persisted document directly. Use metadata.portal_url or access_token.');
+        },
+      };
+    } catch (e) {
+      throw new Error(`Failed to parse metadata JSON: ${e}`);
+    }
+  }
+
+  const pdf = data as Buffer;
   return {
     pdf,
     size: pdf.length,
@@ -82,8 +100,8 @@ export class TypeforgeClient {
       if (payload[key] === undefined) delete payload[key];
     }
 
-    const pdf = await this._post('/render', payload);
-    return makeResult(pdf);
+    const { body, contentType } = await this._post('/render', payload);
+    return makeResult(body, contentType);
   }
 
   /**
@@ -127,23 +145,31 @@ export class TypeforgeClient {
   }
 
   /**
+   * List all managed documents in the Typeforge Lifecycle.
+   */
+  async listDocuments(): Promise<any[]> {
+    const { body } = await this._request('GET', '/api/documents');
+    return JSON.parse(body.toString('utf-8'));
+  }
+
+  /**
    * List all registered webhooks for the user.
    */
   async listWebhooks(): Promise<any[]> {
-    const response = await this._request('GET', '/api/webhooks');
-    return JSON.parse(response.toString('utf-8'));
+    const { body } = await this._request('GET', '/api/webhooks');
+    return JSON.parse(body.toString('utf-8'));
   }
 
   /**
    * Register a new webhook.
    */
   async createWebhook(label: string, targetUrl: string, templateId?: string): Promise<any> {
-    const response = await this._request('POST', '/api/webhooks', {
+    const { body } = await this._request('POST', '/api/webhooks', {
       label,
       target_url: targetUrl,
       template_id: templateId,
     });
-    return JSON.parse(response.toString('utf-8'));
+    return JSON.parse(body.toString('utf-8'));
   }
 
   /**
@@ -157,19 +183,19 @@ export class TypeforgeClient {
    * Trigger a webhook render and delivery.
    */
   async triggerWebhook(id: string, data: any = {}): Promise<any> {
-    const response = await this._request('POST', `/api/webhooks/${id}/trigger`, { data });
-    return JSON.parse(response.toString('utf-8'));
+    const { body } = await this._request('POST', `/api/webhooks/${id}/trigger`, { data });
+    return JSON.parse(body.toString('utf-8'));
   }
 
   // ---------------------------------------------------------------------------
   // Internal HTTP transport (zero-dependency, uses Node.js built-ins)
   // ---------------------------------------------------------------------------
 
-  private async _post(endpoint: string, body: unknown): Promise<Buffer> {
+  private async _post(endpoint: string, body: unknown): Promise<{ body: Buffer; contentType: string }> {
     return this._request('POST', endpoint, body);
   }
 
-  private async _request(method: 'GET' | 'POST' | 'DELETE', endpoint: string, body?: unknown): Promise<Buffer> {
+  private async _request(method: 'GET' | 'POST' | 'DELETE', endpoint: string, body?: unknown, attempt = 0): Promise<{ body: Buffer; contentType: string }> {
     const url = new URL(this.baseUrl + endpoint);
     const isHttps = url.protocol === 'https:';
     const requestLib = isHttps ? https : http;
@@ -185,22 +211,32 @@ export class TypeforgeClient {
           headers: {
             'Content-Type': 'application/json',
             ...(bodyStr ? { 'Content-Length': Buffer.byteLength(bodyStr) } : {}),
-            'Authorization': `Bearer ${this.apiKey}`,
-            'User-Agent': 'Typeforge API-sdk-node/0.1.0',
+            'X-API-Key': this.apiKey,
+            'User-Agent': 'Typeforge-SDK-Node/0.1.0',
           },
           timeout: this.timeout,
         },
-        (res) => {
+        async (res) => {
           const chunks: Buffer[] = [];
-
           res.on('data', (chunk: Buffer) => chunks.push(chunk));
 
-          res.on('end', () => {
+          res.on('end', async () => {
             const responseBody = Buffer.concat(chunks);
             const statusCode = res.statusCode ?? 0;
+            const contentType = res.headers['content-type'] ?? 'application/octet-stream';
+            const requestId = res.headers['x-request-id'] as string | undefined;
+
+            // Automatic Retry for transient errors (429, 502, 503, 504)
+            const retryableStatuses = [429, 502, 503, 504];
+            const maxRetries = 3;
+            if (retryableStatuses.includes(statusCode) && attempt < maxRetries) {
+                const delay = Math.pow(2, attempt) * 1000 + Math.random() * 1000;
+                await new Promise(r => setTimeout(r, delay));
+                return resolve(this._request(method, endpoint, body, attempt + 1));
+            }
 
             if (statusCode >= 200 && statusCode < 300) {
-              resolve(responseBody);
+              resolve({ body: responseBody, contentType });
               return;
             }
 
@@ -212,11 +248,10 @@ export class TypeforgeClient {
               message = parsed.error ?? message;
               errorCode = parsed.error_code ?? errorCode;
             } catch {
-              // Non-JSON response body
               message = responseBody.toString('utf-8').slice(0, 200);
             }
 
-            reject(new TypeforgeError(statusCode, errorCode, message));
+            reject(new TypeforgeError(statusCode, errorCode, message, requestId));
           });
         }
       );

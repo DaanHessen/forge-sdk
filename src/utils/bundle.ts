@@ -89,8 +89,9 @@ export async function bundleProject(
           if (options.data && !isBinaryExtension(ext)) {
             let content = fileBuffer.toString('utf-8');
             for (const [key, value] of Object.entries(options.data)) {
-              // Match both {{key}} and {{{key}}}
-              const re = new RegExp(`\\{{2,3}${key}\\}{2,3}`, 'g');
+              // Match both {{key}} and {{{key}}}, escaping the key to prevent regex injection
+              const escapedKey = key.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+              const re = new RegExp(`\\{{2,3}${escapedKey}\\}{2,3}`, 'g');
               content = content.replace(re, String(value));
             }
             fileBuffer = Buffer.from(content, 'utf-8');

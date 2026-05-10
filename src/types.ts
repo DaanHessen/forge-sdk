@@ -33,6 +33,11 @@ export interface RenderOptions {
    * Required when using `files` to ensure relative imports resolve correctly.
    */
   mainFilePath?: string;
+  /**
+   * If true, the document will be persisted in the Typeforge Lifecycle.
+   * Instead of raw bytes, the API will return document metadata including an access token.
+   */
+  persist?: boolean;
 }
 
 /** Options for rendering Typeforge after local compilation to Typst. */
@@ -57,20 +62,29 @@ export interface RenderLocalOptions {
   projectRoot?: string;
 }
 
+/** Metadata for a managed document in the Typeforge Lifecycle. */
+export interface DocumentMetadata {
+  id: string;
+  status: 'PENDING' | 'COMPLETED' | 'FAILED';
+  access_token: string;
+  portal_url: string;
+  download_url: string;
+  view_count: number;
+  file_size_bytes: number;
+  expires_at: string;
+  created_at: string;
+}
+
 /** A rendered PDF result. */
 export interface RenderResult {
-  /** The raw PDF bytes. */
-  pdf: Buffer;
+  /** The raw PDF bytes. Null if the document was persisted. */
+  pdf: Buffer | null;
   /** Size in bytes. */
   size: number;
   /** Save the PDF to a file path. */
   save(path: string): Promise<void>;
-}
-
-/** A Typst compilation error. */
-export interface TypeforgeError {
-  code: string;
-  message: string;
+  /** Metadata if the document was persisted. */
+  metadata?: DocumentMetadata;
 }
 
 /** A registered webhook. */

@@ -89,7 +89,6 @@ export type {
   RenderTypeforgeOptions,
   RenderLocalOptions,
   RenderResult,
-  TypeforgeError,
 } from './types';
 
 export type {
