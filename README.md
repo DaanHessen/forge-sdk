@@ -1,23 +1,23 @@
-# TypeTypeTypeforge API SDK (TypeScript)
+# Typeforge API SDK (TypeScript)
 
-The official Node.js/TypeScript SDK for [TypeTypeTypeforge API](https://github.com/DaanHessen/Typeforge-api).
-GitHub: [DaanHessen/Typetypeforge-sdk](https://github.com/DaanHessen/Typetypeforge-sdk)
+The official Node.js/TypeScript SDK for [Typeforge API](https://github.com/DaanHessen/Typeforge-api).
+GitHub: [DaanHessen/typeforge-sdk](https://github.com/DaanHessen/typeforge-sdk)
 
 ## Features
 
-- ðŸ“„ **Render stored templates** with dynamic JSON data
-- ðŸ“ **Bundle and render local Typst projects** â€” zero manual file management
-- ðŸ—ï¸ **Build documents in code** with a fully typed AST builder
+- 📄 **Render stored templates** with dynamic JSON data
+- 📦 **Bundle and render local Typst projects** — zero manual file management
+- 🏗️ **Build documents in code** with a fully typed AST builder
 - ⚒️ **Compile Typeforge locally** into Typst before rendering
-- ðŸ”’ Zero runtime dependencies (uses Node.js built-ins)
-- ðŸŒ Works in Node.js 18+
+- 🔒 Zero runtime dependencies (uses Node.js built-ins)
+- 🌐 Works in Node.js 18+
 
 ---
 
 ## Installation
 
 ```bash
-npm install Typetypeforge-sdk
+npm install typeforge-sdk
 ```
 
 ---
@@ -25,9 +25,9 @@ npm install Typetypeforge-sdk
 ## Quick Start
 
 ```typescript
-import { TypeTypeTypeforge APIClient } from 'Typetypeforge-sdk';
+import { TypeforgeClient } from 'typeforge-sdk';
 
-const client = new TypeTypeTypeforge APIClient({ apiKey: 'sk_YOUR_API_KEY' });
+const client = new TypeforgeClient({ apiKey: 'sk_YOUR_API_KEY' });
 ```
 
 ---
@@ -36,7 +36,7 @@ const client = new TypeTypeTypeforge APIClient({ apiKey: 'sk_YOUR_API_KEY' });
 
 ### 1. Render a Stored Template
 
-Use a template you've uploaded to your TypeTypeTypeforge API account and inject data:
+Use a template you've uploaded to your Typeforge account and inject data:
 
 ```typescript
 const result = await client.render({
@@ -88,7 +88,7 @@ await client.renderLocal('./my-poster/example.typ');
 Use `TypstBuilder` to construct a full Typst document in TypeScript without writing any `.typ` files:
 
 ```typescript
-import { TypstBuilder, bold, italic, link } from 'Typetypeforge-sdk';
+import { TypstBuilder, bold, italic, link } from 'typeforge-sdk';
 
 const doc = new TypstBuilder()
   // Document setup
@@ -170,7 +170,7 @@ Load an existing template and extend it with dynamically generated content:
 
 ```typescript
 const appendix = new TypstBuilder()
-  .heading('Appendix A â€” Raw Data', 1)
+  .heading('Appendix A — Raw Data', 1)
   .table(headers, rows)
   .build();
 
@@ -185,7 +185,7 @@ const result = await client.render({
 
 ## API Reference
 
-### `TypeTypeTypeforge APIClient`
+### `TypeforgeClient`
 
 | Method | Description |
 |---|---|
@@ -193,7 +193,7 @@ const result = await client.render({
 | `renderTypeforge(source, options?)` | Compile Typeforge locally, then render the resulting Typst |
 | `renderLocal(path, options?)` | Bundle and render a local Typst project |
 
-### `TypstBuilder` â€” Block Methods
+### `TypstBuilder` — Block Methods
 
 | Method | Typst output |
 |---|---|
@@ -211,7 +211,7 @@ const result = await client.render({
 | `.horizontalRule()` | `#line(length: 100%)` |
 | `.raw(typst)` | Raw Typst passthrough |
 
-### `TypstBuilder` â€” Preamble Methods
+### `TypstBuilder` — Preamble Methods
 
 | Method | Typst output |
 |---|---|
@@ -225,9 +225,9 @@ const result = await client.render({
 ### Inline Helpers
 
 ```typescript
-import { bold, italic, code, link } from 'Typetypeforge-sdk';
+import { bold, italic, code, link } from 'typeforge-sdk';
 
-builder.paragraph(['See ', link('https://TypeTypeTypeforge API.com', 'TypeTypeTypeforge API'), ' for details.']);
+builder.paragraph(['See ', link('https://typeforge.com', 'Typeforge'), ' for details.']);
 builder.paragraph(['This is ', bold('important'), ' and ', italic('subtle'), '.']);
 ```
 
@@ -237,8 +237,8 @@ builder.paragraph(['This is ', bold('important'), ' and ', italic('subtle'), '.'
 
 | Variable | Description |
 |---|---|
-| `TypeTypeTypeforge API_TEST_API_KEY` | API key for integration tests |
-| `TypeTypeTypeforge API_TEST_BASE_URL` | Override API URL for tests (default: `http://localhost:3000`) |
+| `TYPEFORGE_TEST_API_KEY` | API key for integration tests |
+| `TYPEFORGE_TEST_BASE_URL` | Override API URL for tests (default: `http://localhost:3000`) |
 
 ---
 
