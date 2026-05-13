@@ -1,7 +1,7 @@
 {
   "name": "typeforge-sdk",
   "version": "0.1.1",
-  "description": "Official TypeScript SDK for the Typeforge API PDF rendering platform. Render Typst templates, bundle local projects, and build documents programmatically.",
+  "description": "Legacy Node API client for the Typeforge API. The compiler/WASM SDK now lives at @typeforge/sdk inside the typeforge repository.",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "exports": {

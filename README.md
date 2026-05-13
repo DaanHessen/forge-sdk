@@ -1,5 +1,15 @@
 # Typeforge API SDK (TypeScript)
 
+## Legacy Status
+
+This package is now legacy.
+
+- `typeforge-sdk/` remains in this workspace because local API-client tests still depend on it.
+- the canonical compiler-backed TypeScript package now lives in [`typeforge/typescript-sdk`](../typeforge/typescript-sdk)
+- use `@typeforge/sdk` for browser/serverless local Typeforge compilation through the Rust/WASM compiler
+
+This folder should be treated as an older API client surface, not the source of truth for the Typeforge language runtime.
+
 The official Node.js/TypeScript SDK for [Typeforge API](https://github.com/DaanHessen/Typeforge-api).
 GitHub: [DaanHessen/typeforge-sdk](https://github.com/DaanHessen/typeforge-sdk)
 
